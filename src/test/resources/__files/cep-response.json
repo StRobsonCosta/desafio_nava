@@ -1,0 +1,90 @@
+[
+  {
+    "cep": "01001-000",
+    "logradouro": "Praça da Sé",
+    "complemento": "lado ímpar",
+    "bairro": "Sé",
+    "localidade": "São Paulo",
+    "uf": "SP"
+  },
+  {
+    "cep": "20040-020",
+    "logradouro": "Avenida Rio Branco",
+    "complemento": "lado par",
+    "bairro": "Centro",
+    "localidade": "Rio de Janeiro",
+    "uf": "RJ"
+  },
+  {
+    "cep": "30130-010",
+    "logradouro": "Avenida Afonso Pena",
+    "complemento": "",
+    "bairro": "Centro",
+    "localidade": "Belo Horizonte",
+    "uf": "MG"
+  },
+  {
+    "cep": "40020-010",
+    "logradouro": "Avenida Sete de Setembro",
+    "complemento": "",
+    "bairro": "Centro",
+    "localidade": "Salvador",
+    "uf": "BA"
+  },
+  {
+    "cep": "60025-000",
+    "logradouro": "Rua Barão do Rio Branco",
+    "complemento": "",
+    "bairro": "Centro",
+    "localidade": "Fortaleza",
+    "uf": "CE"
+  },
+  {
+    "cep": "80010-000",
+    "logradouro": "Rua XV de Novembro",
+    "complemento": "",
+    "bairro": "Centro",
+    "localidade": "Curitiba",
+    "uf": "PR"
+  },
+  {
+    "cep": "90010-150",
+    "logradouro": "Rua dos Andradas",
+    "complemento": "",
+    "bairro": "Centro Histórico",
+    "localidade": "Porto Alegre",
+    "uf": "RS"
+  },
+  {
+    "cep": "69005-000",
+    "logradouro": "Avenida Eduardo Ribeiro",
+    "complemento": "",
+    "bairro": "Centro",
+    "localidade": "Manaus",
+    "uf": "AM"
+  },
+  {
+    "cep": "70710-907",
+    "logradouro": "Esplanada dos Ministérios",
+    "complemento": "Bloco F",
+    "bairro": "Zona Cívico-Administrativa",
+    "localidade": "Brasília",
+    "uf": "DF"
+  },
+  {
+    "cep": "64000-080",
+    "logradouro": "Avenida Frei Serafim",
+    "complemento": "",
+    "bairro": "Centro",
+    "localidade": "Teresina",
+    "uf": "PI"
+  },
+  {
+    "cep": "08743-360",
+    "logradouro": "Rua Miguel dos Santos",
+    "complemento": "",
+    "bairro": "Mogi",
+    "localidade": "Mogi das Cruzes",
+    "uf": "SP"
+  }
+]

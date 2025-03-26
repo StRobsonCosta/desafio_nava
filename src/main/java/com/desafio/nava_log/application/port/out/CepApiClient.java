@@ -1,5 +1,7 @@
 package com.desafio.nava_log.application.port.out;
 
+import com.desafio.nava_log.adapter.dto.EnderecoDto;
+
 public interface CepApiClient {
-    String buscarDadosPorCep(String cep);
+    EnderecoDto consultarCep(String cep);
 }

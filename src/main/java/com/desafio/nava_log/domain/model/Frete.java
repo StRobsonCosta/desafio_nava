@@ -1,20 +1,18 @@
 package com.desafio.nava_log.domain.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-@Table
+@Table(name = "fretes")
 @Entity
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Frete implements Serializable {
@@ -38,7 +36,8 @@ public class Frete implements Serializable {
     @Column
     private BigDecimal valor;
 
-    @Column
+    @ManyToOne
+    @JoinColumn(name = "transportadora_id")
     private Transportadora transportadora;
 
 }

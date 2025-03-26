@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPattern": "/cep/.*"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "cep-{{request.pathSegments.[1]}}.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

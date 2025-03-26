@@ -2,31 +2,28 @@ package com.desafio.nava_log.domain.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Table(name = "transportadoras")
+@Document(collection = "logs")
 @Getter
 @Setter
-@Entity
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Transportadora implements Serializable {
+@Builder
+public class LogFrete implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private String id;
 
-    @Column
-    private String nome;
+    private String mensagem;
 
-    @Column
-    private BigDecimal taxaPorKg;
+    private LocalDateTime timestamp = LocalDateTime.now();
 }
