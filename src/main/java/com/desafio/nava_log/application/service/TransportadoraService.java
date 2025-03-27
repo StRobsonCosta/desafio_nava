@@ -28,7 +28,7 @@ public class TransportadoraService implements TransportadoraUseCase {
 
     @Override
     public Transportadora selecionarTransportadora(double peso, String cepOrigem, String cepDestino) {
-
+        log.info("Selecionando Transportadora");
         return transportadoraRepository.findAll().stream()
                 .filter(t -> Objects.nonNull(t.getCepTransportadora()))
                 .min(Comparator.comparing(t -> {
@@ -47,6 +47,7 @@ public class TransportadoraService implements TransportadoraUseCase {
         Transportadora transp = Transportadora.builder()
                 .nome(request.getNome())
                 .taxaPorKg(request.getTaxaPorKg())
+                .cepTransportadora(request.getCepTransportadora())
                 .build();
 
         transp = transportadoraRepository.save(transp);
@@ -69,11 +70,7 @@ public class TransportadoraService implements TransportadoraUseCase {
     public TransportadoraDto buscarTransportadora(UUID id) {
         log.info("Buscando transportadora com ID: {}", id);
 
-        Transportadora transp = transportadoraRepository.findById(id)
-                .orElseThrow(() -> {
-                    log.error("Transportadora com ID {} não encontrada", id);
-                    return new CepNaoEncontradoException("Transportadora não encontrada");
-                });
+        final Transportadora transp = buscarPorId(id);
 
         return new TransportadoraDto(transp.getId(), transp.getNome(), transp.getTaxaPorKg(), transp.getCepTransportadora());
     }
@@ -82,11 +79,7 @@ public class TransportadoraService implements TransportadoraUseCase {
     public TransportadoraDto atualizarTransportadora(UUID id, TransportadoraDto request) {
         log.info("Atualizando transportadora com ID: {}", id);
 
-        Transportadora transp = transportadoraRepository.findById(id)
-                .orElseThrow(() -> {
-                    log.error("Transportadora com ID {} não encontrada", id);
-                    return new CepNaoEncontradoException("Transportadora não encontrada");
-                });
+        Transportadora transp = buscarPorId(id);
 
         transp.setNome(request.getNome());
         transp.setTaxaPorKg(request.getTaxaPorKg());
@@ -101,12 +94,16 @@ public class TransportadoraService implements TransportadoraUseCase {
     public void deletarTransportadora(UUID id) {
         log.info("Deletando transportadora com ID: {}", id);
 
-        Transportadora transportadora = transportadoraRepository.findById(id)
+        buscarPorId(id);
+
+        transportadoraRepository.deleteById(id);
+    }
+
+    private Transportadora buscarPorId(UUID id) {
+        return transportadoraRepository.findById(id)
                 .orElseThrow(() -> {
                     log.error("Transportadora com ID {} não encontrada", id);
                     return new CepNaoEncontradoException("Transportadora não encontrada");
                 });
-
-        transportadoraRepository.deleteById(id);
     }
 }

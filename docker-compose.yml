@@ -1,0 +1,67 @@
+services:    
+      
+  wiremock:
+    image: wiremock/wiremock
+    container_name: wiremock-nava
+    ports:
+      - "9090:8080"
+    volumes:
+      - ./src/test/resources/mappings:/home/wiremock/mappings
+      - ./src/test/resources/__files:/home/wiremock/__files
+    command: --global-response-templating
+    restart: unless-stopped 
+    networks:
+      - app-nava
+
+  app:
+    build: .
+    container_name: nava_log
+    ports:
+      - "8081:8081"
+    depends_on:
+      mongo:
+        condition: service_started
+      db:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/nava_log
+    networks:
+      - app-nava
+
+  db:
+    image: postgres:13-alpine
+    container_name: postgres-nava
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: nava_log
+    ports:
+      - "5432:5432"
+    networks:
+      - app-nava
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      
+  mongo:
+    image: mongo:latest
+    container_name: mongo-nava
+    ports:
+      - "27017:27017"
+    networks:
+      - app-nava
+    volumes:
+      - mongo_data:/data/db   
+
+networks:
+  app-nava:
+    driver: bridge
+
+
+volumes:
+  postgres_data:
+  mongo_data:
