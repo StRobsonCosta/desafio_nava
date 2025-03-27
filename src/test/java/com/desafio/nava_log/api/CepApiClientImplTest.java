@@ -49,7 +49,6 @@ class CepApiClientImplTest {
                         """)
                         .withStatus(200)));
 
-        // Chamada ao método real
         EnderecoDto endereco = cepApiClient.consultarCep("01001-000");
 
         assertNotNull(endereco);

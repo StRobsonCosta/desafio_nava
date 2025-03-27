@@ -8,10 +8,12 @@ import com.desafio.nava_log.application.service.LogFreteService;
 import com.desafio.nava_log.domain.model.LogFrete;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -28,15 +30,28 @@ public class LogFreteServiceTest {
     @Test
     void deveSalvarLogComSucesso() {
         String mensagem = "Mensagem de log";
-        LogFrete log = LogFrete.builder()
+        LocalDateTime timestampEsperado = LocalDateTime.now();
+
+        LogFrete logEsperado = LogFrete.builder()
                 .mensagem(mensagem)
-                .timestamp(LocalDateTime.now())
+                .timestamp(timestampEsperado)
                 .build();
 
         logFreteService.salvarLog(mensagem);
 
-        verify(logFreteRepository, times(1)).save(log);
+        ArgumentCaptor<LogFrete> captor = ArgumentCaptor.forClass(LogFrete.class);
+
+        verify(logFreteRepository, times(1)).save(captor.capture());
+
+        LogFrete logSalvo = captor.getValue();
+
+        assertEquals(logEsperado.getMensagem(), logSalvo.getMensagem());
+
+        assertNotNull(logSalvo.getTimestamp());
+
+        assertTrue(Duration.between(logSalvo.getTimestamp(), timestampEsperado).toMillis() < 1000);
     }
+
 
     @Test
     void deveBuscarLogsPorIntervalo() {

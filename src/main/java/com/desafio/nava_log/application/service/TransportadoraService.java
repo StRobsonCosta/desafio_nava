@@ -3,7 +3,6 @@ package com.desafio.nava_log.application.service;
 import com.desafio.nava_log.adapter.dto.TransportadoraDto;
 import com.desafio.nava_log.application.port.in.DistanciaUseCase;
 import com.desafio.nava_log.application.port.in.TransportadoraUseCase;
-import com.desafio.nava_log.application.port.out.TransportadoraRepository;
 import com.desafio.nava_log.domain.exception.CepNaoEncontradoException;
 import com.desafio.nava_log.domain.model.Transportadora;
 import com.desafio.nava_log.infrastructure.repository.TransportadoraRepositoryImp;

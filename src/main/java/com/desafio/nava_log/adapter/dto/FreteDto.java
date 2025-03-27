@@ -1,13 +1,12 @@
 package com.desafio.nava_log.adapter.dto;
 
 import com.desafio.nava_log.domain.model.Frete;
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
+import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,9 +14,9 @@ import java.math.BigDecimal;
 @Data
 public class FreteDto {
 
+    private UUID id;
     private String transportadora;
     private Double valorFrete;
-//    private String prazoEntrega;
     private String mensagem;
 
     private String cepOrigem;
@@ -30,7 +29,6 @@ public class FreteDto {
         this.cepOrigem = frete.getCepOrigem();
         this.cepDestino = frete.getCepDestino();
         this.peso = Double.valueOf(String.valueOf(frete.getPeso()));
-//        this.prazoEntrega = frete.getTransportadora().getPrazoEstimado();
         this.mensagem = mensagem;
     }
 }

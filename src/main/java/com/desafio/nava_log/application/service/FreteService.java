@@ -2,9 +2,9 @@ package com.desafio.nava_log.application.service;
 
 import com.desafio.nava_log.adapter.dto.FreteDto;
 import com.desafio.nava_log.application.port.in.FreteUseCase;
-import com.desafio.nava_log.application.port.in.LogFreteUseCase;
 import com.desafio.nava_log.application.port.in.TransportadoraUseCase;
 import com.desafio.nava_log.application.port.out.FreteRepository;
+import com.desafio.nava_log.domain.exception.FreteNaoEncontradoException;
 import com.desafio.nava_log.domain.exception.TransportadoraNaoEncontradaException;
 import com.desafio.nava_log.domain.model.Frete;
 import com.desafio.nava_log.domain.model.Transportadora;
@@ -13,8 +13,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -65,5 +67,33 @@ public class FreteService implements FreteUseCase {
                 .valor(valorFrete)
                 .transportadora(transportadora)
                 .build();
+    }
+
+    @Override
+    public FreteDto buscarFretePeloId(UUID id) {
+        log.info("Buscando frete pelo ID: {}", id);
+        Frete frete = freteRepository.findById(id).orElseThrow(() -> new FreteNaoEncontradoException("Frete não encontrado para o ID: " + id));
+        return new FreteDto(frete, "Frete encontrado com sucesso.");
+    }
+
+    @Override
+    public List<FreteDto> buscarFretePorCeps(String cepOrigem, String cepDestino) {
+        log.info("Buscando frete para os CEPs: origem={}, destino={}", cepOrigem, cepDestino);
+        List<Frete> fretes = freteRepository.findByCepOrigemAndCepDestino(cepOrigem, cepDestino);
+        if (fretes.isEmpty()) {
+            throw new FreteNaoEncontradoException("Nenhum frete encontrado para os CEPs informados.");
+        }
+        return fretes.stream()
+                .map(frete -> new FreteDto(frete, "Frete encontrado com sucesso."))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<FreteDto> buscarTodosFretes() {
+        log.info("Buscando todos os fretes.");
+        List<Frete> fretes = freteRepository.findAll();
+        return fretes.stream()
+                .map(frete -> new FreteDto(frete, "Frete encontrado com sucesso."))
+                .collect(Collectors.toList());
     }
 }

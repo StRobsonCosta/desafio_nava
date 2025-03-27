@@ -61,8 +61,6 @@ public class CepValidationServiceTest {
 
     @Test
     void deveLancarExcecaoQuandoAmbosOsCepsSaoInvalidos() {
-        when(cepApiClient.consultarCep("00000-000")).thenReturn(null);
-        when(cepApiClient.consultarCep("99999-999")).thenReturn(null);
 
         assertThrows(CepNaoEncontradoException.class, () ->
                 cepValidationService.validarCep("00000-000", "99999-999")
