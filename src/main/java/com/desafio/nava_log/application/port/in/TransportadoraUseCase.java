@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface TransportadoraUseCase {
-    Transportadora selecionarTransportadora(double peso);
+    Transportadora selecionarTransportadora(double peso, String cepOrigem, String cepDestino) ;
 
     TransportadoraDto criarTransportadora(TransportadoraDto request);
 

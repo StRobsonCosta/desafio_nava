@@ -7,11 +7,11 @@ import java.util.List;
 
 public interface LogFreteUseCase {
 
-    public void salvarLog(String mensagem);
+    void salvarLog(String mensagem);
 
     List<LogFrete> buscarLogsPorIntervalo(LocalDateTime start, LocalDateTime end);
 
     List<LogFrete> buscarLogsPorMensagem(String mensagem);
 
-    public List<LogFrete> buscarTodosLogs();
+    List<LogFrete> buscarTodosLogs();
 }

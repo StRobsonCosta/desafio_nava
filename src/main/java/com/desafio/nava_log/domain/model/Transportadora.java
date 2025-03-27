@@ -29,4 +29,7 @@ public class Transportadora implements Serializable {
 
     @Column
     private BigDecimal taxaPorKg;
+
+    @Column
+    private String cepTransportadora;
 }

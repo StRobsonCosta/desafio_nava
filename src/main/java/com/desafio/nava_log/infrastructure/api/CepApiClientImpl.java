@@ -25,14 +25,15 @@ public class CepApiClientImpl implements CepApiClient {
 
     @Override
     public EnderecoDto consultarCep(String cep) {
-        URI baseUri = URI.create(BASE_URL);
-        String url = UriComponentsBuilder.fromUri(baseUri)
-                .pathSegment("cep", cep)
-                .toUriString();
-
         log.info("Consultando endereço para o CEP: {}", cep);
 
         try {
+            URI baseUri = URI.create(BASE_URL);
+            String url = UriComponentsBuilder.fromUri(baseUri)
+                    .pathSegment("cep", cep)
+                    .toUriString();
+
+
             EnderecoDto endereco = restTemplate.getForObject(url, EnderecoDto.class);
 
             if (Objects.isNull(endereco)) {
@@ -41,7 +42,7 @@ public class CepApiClientImpl implements CepApiClient {
             }
 
             logFreteService.salvarLog(String.format("Frete calculado: Cep=%s, Logradouro=%s, Cidade=%s",
-                    endereco.getCep(), endereco.getLogradouro(), endereco.getCidade()));
+                    endereco.getCep(), endereco.getLogradouro(), endereco.getLocalidade()));
 
             return endereco;
         } catch (HttpClientErrorException.NotFound e) {
@@ -49,9 +50,9 @@ public class CepApiClientImpl implements CepApiClient {
             logFreteService.salvarLog(String.format("CEP não encontrado: %s", cep));
             throw new CepNaoEncontradoException("CEP não encontrado: " + cep);
         } catch (Exception e) {
-            log.error("Erro ao consultar CEP: {}", e.getMessage());
+            log.error("Erro ao consultar CEP/ CEP Inválido: {}", e.getMessage());
             logFreteService.salvarLog(String.format("CEP não encontrado: %s", cep));
-            throw new RuntimeException("Erro ao consultar CEP", e);
+            throw new RuntimeException("Erro ao consultar CEP/ CEP Inválido", e);
         }
     }
 }

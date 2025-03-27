@@ -17,4 +17,5 @@ public class TransportadoraDto {
     private UUID id;
     private String nome;
     private BigDecimal taxaPorKg;
+    private String cepTransportadora;
 }

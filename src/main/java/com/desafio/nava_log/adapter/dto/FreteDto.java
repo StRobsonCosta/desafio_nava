@@ -27,6 +27,9 @@ public class FreteDto {
     public FreteDto(Frete frete, String mensagem) {
         this.transportadora = frete.getTransportadora().getNome();
         this.valorFrete = frete.getValor().doubleValue();
+        this.cepOrigem = frete.getCepOrigem();
+        this.cepDestino = frete.getCepDestino();
+        this.peso = Double.valueOf(String.valueOf(frete.getPeso()));
 //        this.prazoEntrega = frete.getTransportadora().getPrazoEstimado();
         this.mensagem = mensagem;
     }

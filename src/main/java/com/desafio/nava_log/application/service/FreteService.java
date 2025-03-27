@@ -1,5 +1,6 @@
 package com.desafio.nava_log.application.service;
 
+import com.desafio.nava_log.adapter.dto.FreteDto;
 import com.desafio.nava_log.application.port.in.FreteUseCase;
 import com.desafio.nava_log.application.port.in.LogFreteUseCase;
 import com.desafio.nava_log.application.port.in.TransportadoraUseCase;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.Objects;
 
 @Slf4j
@@ -22,11 +24,11 @@ public class FreteService implements FreteUseCase {
     private final CepValidationService cepValidationService;
     private final TransportadoraUseCase transportadoraUseCase;
     private final FreteRepository freteRepository;
-    private final LogFreteService logFreteService;
     private final FreteCalculator freteCalculator;
+    private final DistanciaService distanciaService;
 
     @Override
-    public Frete calcularFrete(String cepOrigem, String cepDestino, Double peso) {
+    public FreteDto calcularFrete(String cepOrigem, String cepDestino, Double peso) {
         log.info("Iniciando cálculo de frete: origem={}, destino={}, peso={}kg", cepOrigem, cepDestino, peso);
 
         if (Objects.isNull(peso) || peso <= 0)
@@ -34,29 +36,34 @@ public class FreteService implements FreteUseCase {
 
         cepValidationService.validarCep(cepOrigem, cepDestino);
 
-        Transportadora transportadora = transportadoraUseCase.selecionarTransportadora(peso);
+        double distanciaKm = distanciaService.calcularDistanciaPorCep(cepOrigem, cepDestino);
+
+        Transportadora transportadora = transportadoraUseCase.selecionarTransportadora(peso, cepOrigem, cepDestino);
         if (Objects.isNull(transportadora))
             throw new TransportadoraNaoEncontradaException("Nenhuma transportadora disponível para o peso informado.");
 
-        BigDecimal valorFrete = freteCalculator.calcularFrete(transportadora, peso);
+        BigDecimal valorFrete = freteCalculator.calcularFrete(transportadora, peso, distanciaKm);
 
-        Frete frete = Frete.builder()
+        final Frete frete = getFrete(cepOrigem, cepDestino, peso, valorFrete, transportadora);
+
+        freteRepository.save(frete);
+        log.info("Frete salvo no banco: {}", frete);
+
+        String mensagem = String.format(
+                "O frete do CEP %s para o CEP %s é de R$ %.2f",
+                cepOrigem, cepDestino, valorFrete
+        );
+
+        return new FreteDto(frete, mensagem);
+    }
+
+    private static Frete getFrete(String cepOrigem, String cepDestino, Double peso, BigDecimal valorFrete, Transportadora transportadora) {
+        return Frete.builder()
                 .cepOrigem(cepOrigem)
                 .cepDestino(cepDestino)
                 .peso(BigDecimal.valueOf(peso))
                 .valor(valorFrete)
                 .transportadora(transportadora)
                 .build();
-
-        freteRepository.save(frete);
-        log.info("Frete salvo no banco: {}", frete);
-
-        // Log detalhado
-        logFreteService.salvarLog(String.format(
-                "Frete calculado: origem=%s, destino=%s, peso=%.2fkg, valor=R$ %.2f, transportadora=%s",
-                cepOrigem, cepDestino, peso, valorFrete, transportadora.getNome()
-        ));
-
-        return frete;
     }
 }

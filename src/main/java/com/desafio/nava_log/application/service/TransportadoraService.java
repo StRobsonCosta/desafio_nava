@@ -1,6 +1,7 @@
 package com.desafio.nava_log.application.service;
 
 import com.desafio.nava_log.adapter.dto.TransportadoraDto;
+import com.desafio.nava_log.application.port.in.DistanciaUseCase;
 import com.desafio.nava_log.application.port.in.TransportadoraUseCase;
 import com.desafio.nava_log.application.port.out.TransportadoraRepository;
 import com.desafio.nava_log.domain.exception.CepNaoEncontradoException;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
@@ -20,17 +22,21 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TransportadoraService implements TransportadoraUseCase {
 
-//    private final TransportadoraRepository transportadoraRepository;
-
     private final TransportadoraRepositoryImp transportadoraRepository;
 
-    @Override
-    public Transportadora selecionarTransportadora(double peso) {
-        List<Transportadora> transportadoras = transportadoraRepository.findAll();
+    private final DistanciaUseCase distanciaUseCase;
 
-        return transportadoras.stream()
-                .min(Comparator.comparing(t -> t.getTaxaPorKg().doubleValue()))
-                .orElseThrow(() -> new RuntimeException("Nenhuma transportadora disponível"));
+    @Override
+    public Transportadora selecionarTransportadora(double peso, String cepOrigem, String cepDestino) {
+
+        return transportadoraRepository.findAll().stream()
+                .filter(t -> Objects.nonNull(t.getCepTransportadora()))
+                .min(Comparator.comparing(t -> {
+                    double distancia = distanciaUseCase.calcularDistanciaGeografica(cepOrigem, cepDestino, t.getCepTransportadora());
+                    return t.getTaxaPorKg().doubleValue() + distancia;
+                }))
+                .orElseThrow(() -> new RuntimeException("Nenhuma transportadora disponível para os CEPs informados."));
+
     }
 
     @Transactional
@@ -38,14 +44,14 @@ public class TransportadoraService implements TransportadoraUseCase {
     public TransportadoraDto criarTransportadora(TransportadoraDto request) {
         log.info("Iniciando a criação de uma nova transportadora: {}", request.getNome());
 
-        Transportadora transportadora = Transportadora.builder()
+        Transportadora transp = Transportadora.builder()
                 .nome(request.getNome())
                 .taxaPorKg(request.getTaxaPorKg())
                 .build();
 
-        transportadora = transportadoraRepository.save(transportadora);
+        transp = transportadoraRepository.save(transp);
 
-        return new TransportadoraDto(transportadora.getId(), transportadora.getNome(), transportadora.getTaxaPorKg());
+        return new TransportadoraDto(transp.getId(), transp.getNome(), transp.getTaxaPorKg(), transp.getCepTransportadora());
     }
 
     @Override
@@ -55,7 +61,7 @@ public class TransportadoraService implements TransportadoraUseCase {
         List<Transportadora> transportadoras = transportadoraRepository.findAll();
 
         return transportadoras.stream()
-                .map(t -> new TransportadoraDto(t.getId(), t.getNome(), t.getTaxaPorKg()))
+                .map(t -> new TransportadoraDto(t.getId(), t.getNome(), t.getTaxaPorKg(), t.getCepTransportadora()))
                 .toList();
     }
 
@@ -63,31 +69,32 @@ public class TransportadoraService implements TransportadoraUseCase {
     public TransportadoraDto buscarTransportadora(UUID id) {
         log.info("Buscando transportadora com ID: {}", id);
 
-        Transportadora transportadora = transportadoraRepository.findById(id)
+        Transportadora transp = transportadoraRepository.findById(id)
                 .orElseThrow(() -> {
                     log.error("Transportadora com ID {} não encontrada", id);
                     return new CepNaoEncontradoException("Transportadora não encontrada");
                 });
 
-        return new TransportadoraDto(transportadora.getId(), transportadora.getNome(), transportadora.getTaxaPorKg());
+        return new TransportadoraDto(transp.getId(), transp.getNome(), transp.getTaxaPorKg(), transp.getCepTransportadora());
     }
 
     @Override
     public TransportadoraDto atualizarTransportadora(UUID id, TransportadoraDto request) {
         log.info("Atualizando transportadora com ID: {}", id);
 
-        Transportadora transportadora = transportadoraRepository.findById(id)
+        Transportadora transp = transportadoraRepository.findById(id)
                 .orElseThrow(() -> {
                     log.error("Transportadora com ID {} não encontrada", id);
                     return new CepNaoEncontradoException("Transportadora não encontrada");
                 });
 
-        transportadora.setNome(request.getNome());
-        transportadora.setTaxaPorKg(request.getTaxaPorKg());
+        transp.setNome(request.getNome());
+        transp.setTaxaPorKg(request.getTaxaPorKg());
+        transp.setCepTransportadora(request.getCepTransportadora());
 
-        transportadora = transportadoraRepository.save(transportadora);
+        transp = transportadoraRepository.save(transp);
 
-        return new TransportadoraDto(transportadora.getId(), transportadora.getNome(), transportadora.getTaxaPorKg());
+        return new TransportadoraDto(transp.getId(), transp.getNome(), transp.getTaxaPorKg(), transp.getCepTransportadora());
     }
 
     @Override

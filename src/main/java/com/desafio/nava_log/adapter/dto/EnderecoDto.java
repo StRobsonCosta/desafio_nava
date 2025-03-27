@@ -13,6 +13,6 @@ public class EnderecoDto {
     private String logradouro;
     private String complemento;
     private String bairro;
-    private String cidade;
+    private String localidade;
     private String uf;
 }

@@ -9,5 +9,4 @@ public class NavaLogApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(NavaLogApplication.class, args);
 	}
-
 }
