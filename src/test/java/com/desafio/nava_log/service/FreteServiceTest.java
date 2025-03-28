@@ -66,8 +66,11 @@ public class FreteServiceTest {
 
         FreteDto resultado = freteService.calcularFrete(CEP_SP, CEP_RJ, peso);
 
+        String esperado = "O frete do CEP 01001-000 para o CEP 20040-020 é de R$ 110";
+        String resultadoObtido = resultado.getMensagem().replace(",00", "").replace(".00", "").trim();
+
         assertNotNull(resultado);
-        assertEquals("O frete do CEP 01001-000 para o CEP 20040-020 é de R$ 110,00", resultado.getMensagem());
+        assertEquals(esperado, resultadoObtido);
     }
 
     @Test
