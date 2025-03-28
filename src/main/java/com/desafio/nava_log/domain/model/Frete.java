@@ -24,13 +24,13 @@ public class Frete implements Serializable {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column
+    @Column(nullable = false)
     private String cepOrigem;
 
-    @Column
+    @Column(nullable = false)
     private String cepDestino;
 
-    @Column
+    @Column(nullable = false)
     private BigDecimal peso;
 
     @Column

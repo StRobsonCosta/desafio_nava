@@ -36,11 +36,11 @@ public class FreteController {
         return ResponseEntity.ok(frete);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/")
     @Operation(summary = "Busca frete pelo ID", description = "Este endpoint busca um frete a partir do ID informado.")
     @ApiResponse(responseCode = "200", description = "Frete encontrado com sucesso", content = @Content(schema = @Schema(implementation = FreteDto.class)))
     @ApiResponse(responseCode = "404", description = "Frete não encontrado", content = @Content(mediaType = "application/json"))
-    public ResponseEntity<FreteDto> buscarFretePeloId(@PathVariable UUID id) {
+    public ResponseEntity<FreteDto> buscarFretePeloId(@RequestParam UUID id) {
         log.info("Buscando frete pelo ID: {}", id);
 
         FreteDto freteDto = freteUseCase.buscarFretePeloId(id);
@@ -60,7 +60,7 @@ public class FreteController {
         return ResponseEntity.ok(freteDtos);
     }
 
-    @GetMapping("/todos")
+    @GetMapping("/listar")
     @Operation(summary = "Busca todos os fretes", description = "Este endpoint retorna todos os fretes cadastrados no sistema.")
     @ApiResponse(responseCode = "200", description = "Fretes encontrados com sucesso", content = @Content(schema = @Schema(implementation = FreteDto.class)))
     public ResponseEntity<List<FreteDto>> buscarTodosFretes() {

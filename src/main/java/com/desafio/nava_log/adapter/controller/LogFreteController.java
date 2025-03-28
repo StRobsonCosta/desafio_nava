@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/logs")
+@RequestMapping("/logs")
 @RequiredArgsConstructor
 public class LogFreteController {
 
@@ -44,7 +44,7 @@ public class LogFreteController {
         return ResponseEntity.ok(logs);
     }
 
-    @GetMapping("/todos")
+    @GetMapping("/listar")
     @Operation(summary = "Obter Logs por Interválo de Tempo", description = "Retorna os detalhes de um Log específico")
     @ApiResponse(responseCode = "200", description = "Log encontrado")
     @ApiResponse(responseCode = "200", description = "Lista de Log encontrada", content = @Content(schema = @Schema(implementation = LogFrete.class)))

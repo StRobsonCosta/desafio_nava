@@ -24,12 +24,12 @@ public class Transportadora implements Serializable {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column
+    @Column(nullable = false)
     private String nome;
 
-    @Column
+    @Column(nullable = false)
     private BigDecimal taxaPorKg;
 
-    @Column
+    @Column(nullable = false)
     private String cepTransportadora;
 }
